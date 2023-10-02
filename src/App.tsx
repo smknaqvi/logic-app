@@ -1,10 +1,5 @@
 import { ThemeProvider } from '@mui/material';
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-  gql,
-} from '@apollo/client';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 import theme from './theme';
 import GamePage from './GamePage';

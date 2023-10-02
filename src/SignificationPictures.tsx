@@ -50,7 +50,7 @@ type SignificationWithPicturesResponse = {
 };
 
 function SignificationPictures() {
-  const { data, loading, error } = useQuery<SignificationWithPicturesResponse>(
+  const { data, loading } = useQuery<SignificationWithPicturesResponse>(
     GET_SIGNFICIATION_WITH_PICTURES
   );
 
