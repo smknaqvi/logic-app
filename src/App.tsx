@@ -16,7 +16,7 @@ function App() {
       <ApolloProvider client={client}>
         <Router>
           <Routes>
-            <Route path="/:puzzle" Component={GamePage} />
+            <Route path="/" Component={GamePage} />
           </Routes>
         </Router>
       </ApolloProvider>

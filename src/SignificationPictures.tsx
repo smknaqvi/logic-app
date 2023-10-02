@@ -4,7 +4,7 @@ import { useReducer, useState } from 'react';
 import SignificationPictureQuestion from './SignificationPictureQuestion';
 import { gql, useQuery } from '@apollo/client';
 import { Puzzle } from './Puzzle';
-import { useParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 
 type AnswersActionType = 'add_solved_puzzle';
 
@@ -51,11 +51,11 @@ type SignificationWithPicturesResponse = {
 };
 
 function SignificationPictures() {
-  const { puzzle } = useParams();
+  const [searchParams] = useSearchParams();
 
   const { data, loading } = useQuery<SignificationWithPicturesResponse>(
     GET_SIGNFICIATION_WITH_PICTURES,
-    { variables: { puzzle } }
+    { variables: { puzzle: searchParams.get('puzzle') } }
   );
 
   const [answersState, dispatch] = useReducer(
