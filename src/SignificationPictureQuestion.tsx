@@ -74,6 +74,7 @@ function SignificationPictureQuestion({ puzzle, isSolved, onSolve }: Props) {
       display="flex"
       flexDirection="column"
       height="100%"
+      justifyContent="center"
     >
       <h2>{puzzle.title}</h2>
       <h3>{puzzle.description}</h3>

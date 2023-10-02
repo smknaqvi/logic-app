@@ -4,6 +4,7 @@ import { useReducer, useState } from 'react';
 import SignificationPictureQuestion from './SignificationPictureQuestion';
 import { gql, useQuery } from '@apollo/client';
 import { Puzzle } from './Puzzle';
+import { useParams } from 'react-router';
 
 type AnswersActionType = 'add_solved_puzzle';
 
@@ -24,9 +25,9 @@ const answersReducer = (state: AnswersState, action: AnswersAction) => {
 };
 
 const GET_SIGNFICIATION_WITH_PICTURES = gql`
-  query SignificationWithPictures {
+  query SignificationWithPictures($puzzle: String = "demo-puzzle") {
     significationWithPictures(
-      where: { puzzleName: "demo-puzzle" }
+      where: { puzzleName: $puzzle }
       orderBy: sortId_ASC
     ) {
       description
@@ -50,8 +51,11 @@ type SignificationWithPicturesResponse = {
 };
 
 function SignificationPictures() {
+  const { puzzle } = useParams();
+
   const { data, loading } = useQuery<SignificationWithPicturesResponse>(
-    GET_SIGNFICIATION_WITH_PICTURES
+    GET_SIGNFICIATION_WITH_PICTURES,
+    { variables: { puzzle } }
   );
 
   const [answersState, dispatch] = useReducer(

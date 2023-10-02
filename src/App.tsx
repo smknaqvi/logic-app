@@ -1,5 +1,6 @@
 import { ThemeProvider } from '@mui/material';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import theme from './theme';
 import GamePage from './GamePage';
@@ -13,7 +14,11 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <ApolloProvider client={client}>
-        <GamePage />
+        <Router>
+          <Routes>
+            <Route path="/:puzzle" Component={GamePage} />
+          </Routes>
+        </Router>
       </ApolloProvider>
     </ThemeProvider>
   );
