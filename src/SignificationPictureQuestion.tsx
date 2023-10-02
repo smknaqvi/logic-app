@@ -1,5 +1,5 @@
-import { Box, IconButton, FormControl, TextField, Alert } from '@mui/material';
-import { Lock, Send } from '@mui/icons-material';
+import { Box, TextField, Alert, Button, Typography } from '@mui/material';
+import { Lock } from '@mui/icons-material';
 import { useEffect, useRef, useState } from 'react';
 import { Puzzle } from './Puzzle';
 import ConfettiAnimation from './ConfettiAnimation';
@@ -7,7 +7,7 @@ import ConfettiAnimation from './ConfettiAnimation';
 type Props = {
   puzzle: Puzzle;
   isSolved: boolean;
-  onSolve: ({ id }: { id: number }) => void;
+  onSolve: ({ id }: { id: string }) => void;
 };
 
 function SignificationPictureQuestion({ puzzle, isSolved, onSolve }: Props) {
@@ -22,10 +22,10 @@ function SignificationPictureQuestion({ puzzle, isSolved, onSolve }: Props) {
   }, [puzzle.id]);
 
   useEffect(() => {
-    audio.current.setAttribute('src', puzzle.audioSrc);
+    audio.current.setAttribute('src', puzzle.audio.url);
     audio.current.load();
     audio.current.play();
-  }, [puzzle.audioSrc]);
+  }, [puzzle.audio.url]);
 
   const [answer, setAnswer] = useState<string>('');
   const handleAnswerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,9 +50,14 @@ function SignificationPictureQuestion({ puzzle, isSolved, onSolve }: Props) {
     }, 5000);
   };
 
-  const handleSubmitAnswer = () => {
+  const handleSubmitAnswer = (event?: React.FormEvent<HTMLFormElement>) => {
+    if (event) {
+      event.preventDefault();
+    }
+
     if (
       puzzle.solutions
+        .split(',')
         .map((solution) => solution.toLowerCase())
         .includes(answer.toLowerCase())
     ) {
@@ -70,8 +75,13 @@ function SignificationPictureQuestion({ puzzle, isSolved, onSolve }: Props) {
       flexDirection="column"
       height="100%"
     >
-      <h2>{puzzle.name}</h2>
-      <h3>Answer: {isSolved ? puzzle.solutions[0] : <Lock />}</h3>
+      <h2>{puzzle.title}</h2>
+      <h3>{puzzle.description}</h3>
+      <h4>
+        <Box display="flex" alignItems="end">
+          Answer: {isSolved ? puzzle.solutions.split(',')[0] : <Lock />}
+        </Box>
+      </h4>
       {alertActive && (
         <Alert
           elevation={99}
@@ -86,25 +96,36 @@ function SignificationPictureQuestion({ puzzle, isSolved, onSolve }: Props) {
         </Alert>
       )}
       <img
-        src={puzzle.imgSrc}
-        alt={puzzle.name}
+        src={puzzle.image.url}
+        alt={puzzle.description}
         width="auto"
         style={{ height: '60%', width: 'auto' }}
       />
-      <FormControl
+      <form
         style={{ margin: '16px', display: 'flex', flexDirection: 'row' }}
+        onSubmit={handleSubmitAnswer}
       >
         <TextField
-          value={answer}
+          value={isSolved ? puzzle.solutions.split(',')[0] : answer}
           onChange={handleAnswerChange}
           variant="outlined"
           color="secondary"
           style={{ backgroundColor: '', borderRadius: '8px' }}
+          disabled={isSolved}
+          autoComplete="off"
         />
-        <IconButton color="secondary" onClick={handleSubmitAnswer}>
-          <Send />
-        </IconButton>
-      </FormControl>
+
+        <Button
+          style={{ alignSelf: 'center', marginLeft: '8px' }}
+          size="small"
+          variant="contained"
+          color="secondary"
+          onClick={() => handleSubmitAnswer()}
+          disabled={isSolved}
+        >
+          <Typography color="white">Submit</Typography>
+        </Button>
+      </form>
       <ConfettiAnimation active={confettiActive} />
     </Box>
   );

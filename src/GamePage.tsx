@@ -19,10 +19,12 @@ function GamePage() {
       return (
         <Box
           display="flex"
+          flexDirection="column"
           justifyContent="center"
           alignItems="center"
           height="100%"
         >
+          <h1>Click Start to Enter the Game Room!</h1>
           <Button
             variant="contained"
             color="secondary"

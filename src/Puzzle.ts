@@ -1,8 +1,13 @@
 export type Puzzle = {
-  name: string;
-  id: number;
-  sortOrder: number;
-  imgSrc: string;
-  audioSrc: string;
-  solutions: string[];
+  description: string;
+  id: string;
+  sortId: number;
+  title: string;
+  audio: {
+    url: string;
+  };
+  image: {
+    url: string;
+  };
+  solutions: string;
 };

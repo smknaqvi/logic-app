@@ -1,17 +1,18 @@
-import { Box, IconButton } from '@mui/material';
+import { Box, CircularProgress, IconButton } from '@mui/material';
 import { ArrowBack, ArrowForward } from '@mui/icons-material';
-import { significationPicturesDataset } from './significationPicturesDataset';
 import { useReducer, useState } from 'react';
 import SignificationPictureQuestion from './SignificationPictureQuestion';
+import { gql, useQuery } from '@apollo/client';
+import { Puzzle } from './Puzzle';
 
 type AnswersActionType = 'add_solved_puzzle';
 
 type AnswersAction = {
   type: AnswersActionType;
-  payload: number;
+  payload: string;
 };
 
-type AnswersState = Set<number>;
+type AnswersState = Set<string>;
 
 const answersReducer = (state: AnswersState, action: AnswersAction) => {
   switch (action.type) {
@@ -22,18 +23,43 @@ const answersReducer = (state: AnswersState, action: AnswersAction) => {
   }
 };
 
+const GET_SIGNFICIATION_WITH_PICTURES = gql`
+  query SignificationWithPictures {
+    significationWithPictures(
+      where: { puzzleName: "demo-puzzle" }
+      orderBy: sortId_ASC
+    ) {
+      description
+      id
+      sortId
+      title
+      updatedAt
+      audio {
+        url
+      }
+      image {
+        url
+      }
+      solutions
+    }
+  }
+`;
+
+type SignificationWithPicturesResponse = {
+  significationWithPictures: Puzzle[];
+};
+
 function SignificationPictures() {
-  const puzzles = significationPicturesDataset.puzzles;
-  const numPuzzles = puzzles.length;
+  const { data, loading, error } = useQuery<SignificationWithPicturesResponse>(
+    GET_SIGNFICIATION_WITH_PICTURES
+  );
 
   const [answersState, dispatch] = useReducer(
     answersReducer,
-    new Set<number>()
+    new Set<string>()
   );
 
   const [curPuzzle, setCurPuzzle] = useState(0);
-  const hasPrev = curPuzzle > 0;
-  const hasMore = curPuzzle < numPuzzles - 1;
 
   const handleBackClick = () => {
     setCurPuzzle((prev) => prev - 1);
@@ -43,9 +69,27 @@ function SignificationPictures() {
     setCurPuzzle((prev) => prev + 1);
   };
 
-  const handleSolvePuzzle = ({ id }: { id: number }) => {
+  const handleSolvePuzzle = ({ id }: { id: string }) => {
     dispatch({ type: 'add_solved_puzzle', payload: id });
   };
+
+  if (loading || !data) {
+    return (
+      <Box
+        alignItems="center"
+        justifyContent="center"
+        display="flex"
+        flexDirection="row"
+        height="100%"
+      >
+        <CircularProgress size={25} />
+      </Box>
+    );
+  }
+
+  const numPuzzles = data.significationWithPictures.length;
+  const hasPrev = curPuzzle > 0;
+  const hasMore = curPuzzle < numPuzzles - 1;
 
   return (
     <Box
@@ -64,8 +108,10 @@ function SignificationPictures() {
         <ArrowBack />
       </IconButton>
       <SignificationPictureQuestion
-        puzzle={puzzles[curPuzzle]}
-        isSolved={answersState.has(puzzles[curPuzzle].id)}
+        puzzle={data.significationWithPictures[curPuzzle]}
+        isSolved={answersState.has(
+          data.significationWithPictures[curPuzzle].id
+        )}
         onSolve={handleSolvePuzzle}
       />
       <IconButton

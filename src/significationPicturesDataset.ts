@@ -1,6 +1,4 @@
-import { Puzzle } from './Puzzle';
-
-export const significationPicturesDataset: { puzzles: Puzzle[] } = {
+export const significationPicturesDataset = {
   puzzles: [
     {
       id: 0,
