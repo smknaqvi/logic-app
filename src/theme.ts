@@ -18,7 +18,7 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'Roboto, Arial, sans-serif',
+    fontFamily: 'Philosopher, sans-serif',
     h1: {
       fontSize: '2.5rem', // Large headings
       fontWeight: 600,
@@ -45,8 +45,6 @@ const theme = createTheme({
   shape: {
     borderRadius: 8, // Slightly rounded corners for elements
   },
-
 });
 
 export default theme;
-
