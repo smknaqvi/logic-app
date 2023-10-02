@@ -55,7 +55,7 @@ function SignificationPictures() {
 
   const { data, loading } = useQuery<SignificationWithPicturesResponse>(
     GET_SIGNFICIATION_WITH_PICTURES,
-    { variables: { puzzle: searchParams.get('puzzle') } }
+    { variables: { puzzle: searchParams.get('puzzle') || 'demo-puzzle' } }
   );
 
   const [answersState, dispatch] = useReducer(
